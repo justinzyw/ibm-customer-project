@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.sonatype.mavenbook.multi</groupId>
+    <artifactId>simple-parent</artifactId>
+    <version>0.10-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>simple-webapp</artifactId>
+  <packaging>war</packaging>
+  <name>Multi Chapter Simple Web Application Project</name>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-servlet_2.4_spec</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.mavenbook.multi</groupId>
+      <artifactId>simple-weather</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <finalName>simple-webapp</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty-plugin</artifactId>
+        <version>6.1.9</version>
+      </plugin>
+     <plugin>
+        <groupId>com.spotify</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>0.4.13</version>
+        <configuration>
+          <serverId>devops-nexus</serverId>
+          <registryUrl>http://devops-nexus:5000/v1/</registryUrl>
+          <imageName>127.0.0.1:5000/appname</imageName>
+          <imageTags>
+            <imageTag>${project.version}</imageTag>
+            <imageTag>latest</imageTag>
+          </imageTags>
+          <dockerDirectory>docker</dockerDirectory>
+          <!-- baseImage>java</baseImage -->
+          <!-- entryPoint>["java", "-jar", "/${project.build.finalName}.war"]</entryPoint -->
+          <!-- copy the service's jar file from target into the root directory of the image --> 
+          <resources>
+             <resource>
+               <targetPath>/</targetPath>
+               <directory>${project.build.directory}</directory>
+               <include>*.war</include>
+             </resource>
+          </resources>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

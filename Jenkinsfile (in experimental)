@@ -1,0 +1,30 @@
+node {
+ws('workspace/src') {
+  stage('Update') {
+    //update the git repo in jenkins
+    checkout scm
+    
+    //update the git repo in redmine
+    //sh "docker ps|grep devops-redmine|grep 80|head -c 12 > CONTAINER_ID_FILE"
+    //def container_id = readFile('CONTAINER_ID_FILE').trim()
+    //sh "docker exec ${container_id} bash -c \"cd /home/redmine/data/src/ibm-customer-project&&git fetch --all\""
+    //sh "rm CONTAINER_ID_FILE"
+  }
+
+  stage('Build & Upload') {
+    sh "docker run -i --rm -v devops_maven_volume:/root/.m2 -v devops_jenkins_volume:/home -w /home/workspace/src --net devops_network maven mvn clean install deploy"
+  }
+
+  stage('Image & Push') {
+    //sh "cp simple-parent/simple-webapp/target/*.war simple-parent/simple-webapp/docker"
+    //sh "docker build -t 127.0.0.1:5000/appname simple-parent/simple-webapp/docker/."
+    //sh "docker login -u admin -p zaq12wsx http://127.0.0.1:5000"
+    //sh "docker push 127.0.0.1:5000/appname"
+    sh "docker run -i --rm -v devops_maven_volume:/root/.m2 -v devops_jenkins_volume:/home -w /home/workspace/src/simple-parent/simple-webapp -e DOCKER_HOST=tcp://10.0.2.15:2375 --net devops_network maven mvn -X docker:build -DpushImage"
+  }
+
+  stage('Deploy') {
+    sh "docker run -d -p 9000:8080 --name=app --net devops_network 127.0.0.1:5000/appname"
+  }
+}
+}

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.sonatype.mavenbook.multi</groupId>
+  <artifactId>parent</artifactId>
+  
+  <version>0.10-SNAPSHOT</version>
+  
+  <packaging>pom</packaging>
+  <name>Multi Chapter Parent Project</name>
+  <modules>
+    <module>simple-parent</module>
+  </modules>
+  
+  
+  <build>
+    <pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+    </pluginManagement>
+  </build>
+  
+  
+  <distributionManagement>
+    <repository>
+      <id>devops-nexus</id>
+      <name>Nexus Releases</name>
+      <url>http://devops-nexus:8081/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>devops-nexus</id>
+      <name>Nexus Snapshot</name>
+      <url>http://devops-nexus:8081/repository/maven-snapshots/</url>
+    </snapshotRepository>
+    <site>
+      <id>devops-nexus</id>
+      <name>Nexus Sites</name>
+      <url>dav:http://devops-nexus:8081/repository/site/</url>
+    </site>
+  </distributionManagement>
+</project>
